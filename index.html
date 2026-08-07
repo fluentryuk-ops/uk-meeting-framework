@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Workplace Vocabulary Toolkit | Fluentry-UK</title>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0E2340">
+<style>
+  :root{
+    --navy-deep:#0E2340;
+    --navy:#173B66;
+    --navy-mid:#2C5C99;
+    --sky:#6FA3D6;
+    --sky-pale:#EAF1FA;
+    --paper:#F7F9FC;
+    --gold:#C79A4B;
+    --ink:#14294D;
+    --line:#D8E3F1;
+    --success:#2E8B57;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-tap-highlight-color:transparent;
+  }
+  h1,h2,h3,.display{
+    font-family:'Poppins', 'Segoe UI', sans-serif;
+    font-weight:700;
+    margin:0;
+  }
+  #app{max-width:640px;margin:0 auto;min-height:100vh;background:var(--paper);position:relative;}
+
+  /* Header */
+  header.hero{
+    background:linear-gradient(160deg, var(--navy-deep) 0%, var(--navy-mid) 70%, var(--sky) 130%);
+    padding:28px 20px 22px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  header.hero .skyline{
+    position:absolute;
+    bottom:-6px; left:0; right:0;
+    height:46px;
+    opacity:0.16;
+    background-repeat:repeat-x;
+    background-size:340px 46px;
+  }
+  header.hero .brandrow{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
+  header.hero .brand{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:0.85;font-weight:600;}
+  header.hero .badge{
+    background:rgba(255,255,255,0.18);
+    border:1px solid rgba(255,255,255,0.35);
+    border-radius:20px;
+    padding:4px 12px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.5px;
+  }
+  header.hero h1{font-size:26px;line-height:1.15;margin-top:14px;position:relative;z-index:2;}
+  header.hero p.sub{margin:8px 0 0;font-size:14px;opacity:0.88;position:relative;z-index:2;max-width:46ch;}
+
+  /* Section tabs */
+  nav.tabs{
+    display:flex;
+    gap:6px;
+    padding:14px 16px 0;
+    overflow-x:auto;
+    background:var(--paper);
+    position:sticky;
+    top:0;
+    z-index:10;
+    border-bottom:1px solid var(--line);
+  }
+  nav.tabs button{
+    flex:1 0 auto;
+    background:transparent;
+    border:none;
+    padding:10px 14px 12px;
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--navy-mid);
+    border-bottom:3px solid transparent;
+    cursor:pointer;
+  }
+  nav.tabs button.active{
+    color:var(--navy-deep);
+    border-bottom-color:var(--gold);
+  }
+
+  main{padding:18px 16px 100px;}
+
+  section.panel{display:none;}
+  section.panel.active{display:block;}
+
+  .section-title-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;}
+  .section-title-row h2{font-size:19px;color:var(--navy-deep);}
+  .word-count{font-size:12px;color:var(--navy-mid);font-weight:600;}
+
+  .sub-block{margin-bottom:22px;}
+  .sub-heading{
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--gold);
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    margin:18px 0 6px;
+  }
+  .sub-block:first-of-type .sub-heading{margin-top:2px;}
+
+  /* Audio bar */
+  .audio-card{
+    background:var(--navy-deep);
+    border-radius:14px;
+    padding:14px 16px;
+    margin:14px 0 16px;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .audio-card .label{
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+  }
+  .audio-card audio{width:100%;height:34px;}
+  .audio-card .note{font-size:11.5px;opacity:0.7;}
+
+  /* Search */
+  .search-wrap{position:relative;margin-bottom:14px;}
+  .search-wrap input{
+    width:100%;
+    padding:11px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    font-size:15px;
+    background:#fff;
+  }
+  .search-wrap input:focus{outline:2px solid var(--sky);}
+
+  /* Word list */
+  ul.word-list{list-style:none;margin:0;padding:0;}
+  li.word-row{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    margin-bottom:8px;
+    overflow:hidden;
+  }
+  .word-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 14px;
+    cursor:pointer;
+  }
+  .word-head .wtext{display:flex;flex-direction:column;}
+  .word-head .w{font-weight:700;font-size:15.5px;color:var(--navy-deep);}
+  .word-head .sounds{font-size:12.5px;color:var(--navy-mid);margin-top:2px;font-style:italic;}
+  .word-head .star{
+    background:none;border:none;font-size:19px;line-height:1;
+    color:var(--line);cursor:pointer;padding:4px 6px;
+  }
+  .word-head .star.saved{color:var(--gold);}
+  .word-meaning{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.22s ease, padding 0.22s ease;
+    background:var(--sky-pale);
+    font-size:13.5px;
+    color:var(--ink);
+    padding:0 14px;
+  }
+  li.word-row.open .word-meaning{max-height:120px;padding:10px 14px 14px;}
+
+  .empty-state{
+    text-align:center;
+    padding:30px 10px;
+    color:var(--navy-mid);
+    font-size:14px;
+  }
+
+  /* Bottom nav */
+  nav.bottombar{
+    position:fixed;
+    bottom:0;left:0;right:0;
+    max-width:640px;
+    margin:0 auto;
+    background:#fff;
+    border-top:1px solid var(--line);
+    display:flex;
+    z-index:20;
+  }
+  nav.bottombar button{
+    flex:1;
+    background:none;
+    border:none;
+    padding:11px 4px 9px;
+    font-family:'Poppins',sans-serif;
+    font-size:11px;
+    font-weight:700;
+    color:var(--navy-mid);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    cursor:pointer;
+  }
+  nav.bottombar button .icon{font-size:17px;}
+  nav.bottombar button.active{color:var(--navy-deep);}
+  nav.bottombar button.active .icon{color:var(--gold);}
+
+  /* Practice / S5 */
+  .practice-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .practice-card p{margin:0 0 8px;font-size:14px;line-height:1.5;}
+  .practice-card p b{color:var(--navy-deep);}
+  .quote-card{
+    background:var(--sky-pale);
+    border-left:4px solid var(--gold);
+    padding:14px 16px;
+    border-radius:8px;
+    font-style:italic;
+    font-size:14px;
+    color:var(--navy-deep);
+    margin-bottom:16px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header class="hero">
+    <div class="skyline" style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22340%22 height=%2246%22><rect x=%2210%22 y=%2222%22 width=%228%22 height=%2224%22 fill=%22white%22/><rect x=%2224%22 y=%2210%22 width=%2210%22 height=%2236%22 fill=%22white%22/><rect x=%2240%22 y=%2226%22 width=%2214%22 height=%2220%22 fill=%22white%22/><circle cx=%2245%22 cy=%2216%22 r=%226%22 fill=%22white%22/><rect x=%2270%22 y=%2218%22 width=%226%22 height=%2228%22 fill=%22white%22/></svg>');"></div>
+    <div class="brandrow">
+      <div class="brand">Fluentry&#8226;UK</div>
+      <div class="badge">CEFR B1&#8211;B2</div>
+    </div>
+    <h1>Workplace Vocabulary Toolkit</h1>
+    <p class="sub">UK online meetings &amp; remote collaboration &#8212; tap any word to hear it, tap the star to save it.</p>
+  </header>
+
+  <nav class="tabs" id="tabsNav"></nav>
+
+  <main id="mainArea"></main>
+
+  <nav class="bottombar">
+    <button data-view="learn" class="active"><span class="icon">&#128214;</span>Learn</button>
+    <button data-view="saved"><span class="icon">&#9733;</span>Saved</button>
+    <button data-view="practice"><span class="icon">&#9998;</span>Practice</button>
+  </nav>
+
+</div>
+
+<script type="application/json" id="vocabData">[{"id": "s1", "num": "S1", "title": "Collaboration & Communication Actions", "subs": [{"id": "s1_1", "label": "S1.1", "range": "A–C", "words": [{"w": "Access", "s": "AK-sess", "m": "Open or reach a file / folder"}, {"w": "Add", "s": "ad", "m": "Include something new"}, {"w": "Adjust", "s": "uh-JUST", "m": "Make small changes"}, {"w": "Agree", "s": "uh-GREE", "m": "Have the same opinion"}, {"w": "Allocate", "s": "AL-uh-kayt", "m": "Give tasks / resources"}, {"w": "Approve", "s": "uh-PROOV", "m": "Officially accept / permit"}, {"w": "Assign", "s": "uh-SYN", "m": "Give a task to someone"}, {"w": "Attach", "s": "uh-TACH", "m": "Add a file or link"}, {"w": "Attend", "s": "uh-TEND", "m": "Be present at a meeting"}, {"w": "Block", "s": "blok", "m": "Prevent or stop access"}, {"w": "Brainstorm", "s": "BRAYN-stawm", "m": "Share creative ideas"}, {"w": "Cancel", "s": "KAN-suhl", "m": "Stop or call off a meeting"}, {"w": "Chat", "s": "chat", "m": "Write short messages"}, {"w": "Clarify", "s": "KLARR-uh-fy", "m": "Make something clearer"}, {"w": "Collaborate", "s": "kuh-LAB-uh-rayt", "m": "Work together with others"}, {"w": "Comment", "s": "KOM-ent", "m": "Add feedback or note"}, {"w": "Confirm", "s": "kuhn-FURM", "m": "Say something is correct / final"}, {"w": "Connect", "s": "kuh-NEKT", "m": "Link with another user / network"}, {"w": "Contribute", "s": "kuhn-TRIB-yoot", "m": "Add ideas / work to a project"}, {"w": "Copy", "s": "KOP-ee", "m": "Duplicate or reproduce"}]}, {"id": "s1_2", "label": "S1.2", "range": "C–P", "words": [{"w": "Create", "s": "kree-AYT", "m": "Make something new"}, {"w": "Decline", "s": "di-KLYN", "m": "Politely refuse an invite"}, {"w": "Delegate", "s": "DEL-uh-gayt", "m": "Give work to others"}, {"w": "Discuss", "s": "di-SKUSS", "m": "Talk about ideas or plans"}, {"w": "Download", "s": "DOWN-lohd", "m": "Save data from the web"}, {"w": "Edit", "s": "ED-it", "m": "Change or correct text"}, {"w": "Enable", "s": "i-NAY-buhl", "m": "Turn on / allow a feature"}, {"w": "Evaluate", "s": "i-VAL-yoo-ayt", "m": "Judge quality or results"}, {"w": "Forward", "s": "FAW-wuhd", "m": "Send something on to another person"}, {"w": "Highlight", "s": "HY-lyt", "m": "Mark something as important"}, {"w": "Host", "s": "HOHST", "m": "Lead or run a meeting"}, {"w": "Invite", "s": "in-VYT", "m": "Ask someone to join"}, {"w": "Join", "s": "JOYN", "m": "Enter a meeting or group"}, {"w": "Lead", "s": "LEED", "m": "Guide or direct others"}, {"w": "Manage", "s": "MAN-ij", "m": "Organise or control a task"}, {"w": "Mention", "s": "MEN-shuhn", "m": "Refer to briefly"}, {"w": "Notify", "s": "NOH-tuh-fy", "m": "Inform someone formally"}, {"w": "Organise", "s": "AW-guh-nyz", "m": "Arrange or plan systematically"}, {"w": "Participate", "s": "paa-TIS-uh-payt", "m": "Actively take part"}, {"w": "Postpone", "s": "puh-SPOHN", "m": "Delay or move to later"}]}, {"id": "s1_3", "label": "S1.3", "range": "P–U", "words": [{"w": "Present", "s": "pri-ZENT", "m": "Give a talk or show slides"}, {"w": "Record", "s": "ri-KAWD", "m": "Save meeting audio / video"}, {"w": "Reply", "s": "ri-PLY", "m": "Answer a message or email"}, {"w": "Request", "s": "ri-KWEST", "m": "Ask formally for something"}, {"w": "Respond", "s": "ri-SPOND", "m": "React / answer quickly"}, {"w": "Review", "s": "ri-VYOO", "m": "Check and comment on work"}, {"w": "Schedule", "s": "SHEJ-yool", "m": "Plan a time for something"}, {"w": "Share", "s": "SHAIR", "m": "Give access to a file or info"}, {"w": "Submit", "s": "suhb-MIT", "m": "Send work for approval"}, {"w": "Troubleshoot", "s": "TRUhB-uhl-SHOOT", "m": "Find and fix a technical issue"}, {"w": "Upload", "s": "up-LOHD", "m": "Send data to the internet"}, {"w": "Update", "s": "UP-DAYT", "m": "Bring information up to date"}]}]}, {"id": "s2", "num": "S2", "title": "Online Meeting Tasks", "subs": [{"id": "s2_1", "label": "S2.1", "range": "A–D", "words": [{"w": "Agenda", "s": "uh-JEN-duh", "m": "List of topics to discuss in a meeting"}, {"w": "App", "s": "ap", "m": "Short for “application” or software program"}, {"w": "Audio", "s": "AW-dee-oh", "m": "The sound signal in an online meeting"}, {"w": "Attachment", "s": "uh-TACH-muhnt", "m": "File added to an email or chat"}, {"w": "Authentication", "s": "aw-THEN-ti-KAY-shuhn", "m": "Process of verifying a user's identity"}, {"w": "Bandwidth", "s": "BAN-dwitth", "m": "Internet data capacity or speed"}, {"w": "Bookmark", "s": "BUUK-maak", "m": "Saved webpage for quick access"}, {"w": "Breakout room", "s": "BRAY-kowt room", "m": "Small group space in a virtual meeting"}, {"w": "Browser", "s": "BROW-zuh", "m": "Software used to access the internet"}, {"w": "Backup", "s": "BAK-up", "m": "Saved copy of files or data"}, {"w": "Calendar invite", "s": "KAL-uhn-duh IN-vyt", "m": "Online meeting invitation"}, {"w": "Camera", "s": "KAM-uh-ruh", "m": "Device for video input"}, {"w": "Chatbox", "s": "CHAT-BOKS", "m": "Space to send written messages"}, {"w": "Collaboration", "s": "kuh-LAB-uh-RAY-shuhn", "m": "Working together on shared tasks"}, {"w": "Connection", "s": "kuh-NEK-shuhn", "m": "Link between devices or people online"}, {"w": "Dashboard", "s": "DASH-bawd", "m": "Control panel showing key info"}, {"w": "Data sharing", "s": "DAY-tuh SHAIR-ing", "m": "Exchanging information digitally"}]}, {"id": "s2_2", "label": "S2.2", "range": "D–H", "words": [{"w": "Device", "s": "di-VYS", "m": "Electronic tool such as laptop or phone"}, {"w": "Document", "s": "DOK-yuh-muhnt", "m": "Written or digital file"}, {"w": "Encryption", "s": "in-KRIP-shuhn", "m": "Securing data with code"}, {"w": "Email thread", "s": "EE-mayl-THRED", "m": "Ongoing chain of related emails"}, {"w": "Emoji", "s": "i-MOH-jee", "m": "Small symbol or face used in messages"}, {"w": "Extension", "s": "ik-STEN-shuhn", "m": "Added feature or plug-in"}, {"w": "External link", "s": "ik-STUR-nuhl LINK", "m": "Hyperlink to another website"}, {"w": "File-sharing", "s": "FYL-SHAIR-ing", "m": "Sending files digitally"}, {"w": "Firewall", "s": "FY-uh-wawl", "m": "Network security barrier"}, {"w": "Feedback form", "s": "FEED-back FAWM", "m": "Form for collecting opinions"}, {"w": "Folder", "s": "FOHL-duh", "m": "Space for grouping files"}, {"w": "Format", "s": "FAW-mat", "m": "Arrangement or layout of data"}, {"w": "Gallery view", "s": "GAL-uh-ree vyoo", "m": "Display showing all participants"}, {"w": "Grid layout", "s": "GRID LAY-owt", "m": "Square arrangement of video windows"}, {"w": "Group chat", "s": "GROOP CHAT", "m": "Text conversation with multiple people"}, {"w": "Guest link", "s": "GEST LINK", "m": "Temporary link for outside users"}, {"w": "Headset", "s": "HED-set", "m": "Headphones with microphone"}]}, {"id": "s2_3", "label": "S2.3", "range": "J–S", "words": [{"w": "Join code", "s": "JOYN KOHD", "m": "Access number for an online meeting"}, {"w": "Layout", "s": "LAY-owt", "m": "Visual arrangement on screen"}, {"w": "Link", "s": "LINK", "m": "Web address or connection"}, {"w": "Meeting ID", "s": "MEET-ing eye-dee", "m": "Unique number to join a meeting"}, {"w": "Microphone", "s": "MY-kruh-fohn", "m": "Device for capturing voice"}, {"w": "Mute / Unmute", "s": "MYOOT / UN-MYOOT", "m": "Turn sound off or on"}, {"w": "Notification", "s": "NOH-tuh-fi-KAY-shuhn", "m": "Message alert or update"}, {"w": "Online platform", "s": "ON-LYN PLAT-fawm", "m": "Digital system for communication"}, {"w": "Presentation mode", "s": "prez-en-TAY-shun mode", "m": "Displaying slides to an audience"}, {"w": "Recording", "s": "ri-KAWD-ing", "m": "Saved audio or video file"}, {"w": "Screen sharing", "s": "SKREEN SHAIR-ing", "m": "Showing your screen to others"}, {"w": "Software update", "s": "SOFT-wair UP-DATE", "m": "New version of an app or system"}, {"w": "Spreadsheet", "s": "SPRED-sheet", "m": "Table for organising data (e.g. Excel)"}]}]}, {"id": "s3", "num": "S3", "title": "Technical Support & IT", "subs": [{"id": "s3_1", "label": "S3.1", "range": "A–D", "words": [{"w": "Account", "s": "uh-KOWNT", "m": "User identity for login"}, {"w": "Antivirus", "s": "an-tee-VY-rus", "m": "Software that protects from viruses"}, {"w": "App crash", "s": "AP KRASH", "m": "Program stops working suddenly"}, {"w": "Bug", "s": "BUG", "m": "Software error or fault"}, {"w": "Cache", "s": "KASH", "m": "Temporary storage for quick access"}, {"w": "Cloud", "s": "klowd", "m": "Online storage space or platform"}, {"w": "Compress", "s": "kuhm-PRES", "m": "Reduce file size"}, {"w": "Configuration", "s": "kuhn-FIG-uh-RAY-shuhn", "m": "Setup or arrangement of software"}, {"w": "Connectivity", "s": "KON-ek-TIV-uh-tee", "m": "Ability to connect to a network"}, {"w": "Connection issue", "s": "kuh-NEK-shuhn ISH-oo", "m": "Problem with network link"}, {"w": "Connection speed", "s": "kuh-NEK-shuhn SPEED", "m": "How fast data moves online"}, {"w": "Cursor", "s": "KUR-suh", "m": "Pointer on screen"}, {"w": "Cybersecurity", "s": "SY-buh si-KYOOR-uh-tee", "m": "Online protection from attacks"}, {"w": "Data breach", "s": "DAY-tuh BREECH", "m": "Information leak or theft"}, {"w": "Database", "s": "DAY-tuh-bays", "m": "Organised data collection"}, {"w": "Data Copy", "s": "DAY-tuh KOP-ee", "m": "Saved version of information"}, {"w": "Default settings", "s": "di-FOLT SET-ingz", "m": "Original program configuration"}, {"w": "Diagnose", "s": "DY-uhg-nohz", "m": "Identify the cause of a problem"}]}, {"id": "s3_2", "label": "S3.2", "range": "E–R", "words": [{"w": "Error message", "s": "ERR-uh MES-ij", "m": "Notification about a fault"}, {"w": "File corruption", "s": "FYL kuh-RUP-shuhn", "m": "File damaged or unreadable"}, {"w": "Freeze", "s": "FREEZ", "m": "Screen stops responding"}, {"w": "Glitch", "s": "GLICH", "m": "Small temporary fault"}, {"w": "Hardware", "s": "HAAD-wair", "m": "Physical parts of a computer"}, {"w": "Install", "s": "in-STAWL", "m": "Set up software on a device"}, {"w": "Internet lag", "s": "IN-tuh-net LAG", "m": "Delay in data transmission"}, {"w": "Login", "s": "LOG-IN", "m": "Entering username + password"}, {"w": "Logout", "s": "LOG-OWT", "m": "Exiting a user account"}, {"w": "Malware", "s": "MAL-wair", "m": "Harmful software"}, {"w": "Moderator", "s": "MOD-uh-ray-tuh", "m": "Person who controls a meeting"}, {"w": "Network", "s": "NET-wurk", "m": "Linked computers or systems"}, {"w": "Password", "s": "PAA-swurd", "m": "Secret code for access"}, {"w": "Ping", "s": "PING", "m": "Test for online connection"}, {"w": "Reboot", "s": "REE-boot", "m": "Restart a system"}, {"w": "Refresh", "s": "ri-FRESH", "m": "Reload a page or window"}, {"w": "Remote access", "s": "ri-MOHT AK-ses", "m": "Connect from another location"}, {"w": "Restart", "s": "ree-STAAT", "m": "Begin system again"}, {"w": "Restore", "s": "ri-STAW", "m": "Return to an earlier version"}]}, {"id": "s3_3", "label": "S3.3", "range": "S–W", "words": [{"w": "Server", "s": "SUR-vuh", "m": "Central computer providing data"}, {"w": "Session timeout", "s": "SESH-un TYM-OUT", "m": "When login expires automatically"}, {"w": "Settings", "s": "SET-ingz", "m": "Control options"}, {"w": "Software", "s": "SOFT-wair", "m": "Programs and applications"}, {"w": "Spam", "s": "spam", "m": "Unwanted email or messages"}, {"w": "Storage", "s": "STAW-rij", "m": "Space for saving files"}, {"w": "Sync (Synchronise)", "s": "SINK / SIN-kruh-nyz", "m": "Match data across devices"}, {"w": "Uninstall", "s": "UN-in-STAWL", "m": "Remove software"}, {"w": "Wi-Fi", "s": "WHY-fy", "m": "Wireless internet connection"}]}]}, {"id": "s4", "num": "S4", "title": "Task Management & Feedback Verbs", "subs": [{"id": "s4_1", "label": "S4.1", "range": "A–H", "words": [{"w": "Achieve", "s": "uh-CHEEV", "m": "Successfully reach a goal"}, {"w": "Alert", "s": "uh-LURT", "m": "Warn or inform quickly"}, {"w": "Analyse", "s": "AN-uh-lyz", "m": "Examine in detail"}, {"w": "Ask for", "s": "AASK faw", "m": "Request something"}, {"w": "Assess", "s": "uh-SES", "m": "Judge quality or performance"}, {"w": "Arrange", "s": "uh-RAYNJ", "m": "Organise in a clear way"}, {"w": "Authorise", "s": "AW-thuh-ryz", "m": "Give official permission"}, {"w": "Check", "s": "CHEK", "m": "Review for correctness"}, {"w": "Collect", "s": "kuh-LEKT", "m": "Gather information or results"}, {"w": "Complete", "s": "kuhm-PLEET", "m": "Finish a task"}, {"w": "Coordinate", "s": "KOH-AW-duh-nayt", "m": "Organise people or tasks"}, {"w": "Deliver", "s": "di-LIV-uh", "m": "Provide results or work"}, {"w": "Demonstrate", "s": "DEM-uhn-strayt", "m": "Show clearly or explain"}, {"w": "Distribute", "s": "di-STRIB-yoot", "m": "Share items with several people"}, {"w": "Follow up", "s": "FOL-oh UP", "m": "Check after a task is done"}, {"w": "Finalise", "s": "FY-nuh-lyz", "m": "Complete / make something official"}, {"w": "Go over", "s": "GOH OH-vuh", "m": "Review or check carefully"}, {"w": "Hand over", "s": "HAND OH-vuh", "m": "Pass responsibility to another person"}]}, {"id": "s4_2", "label": "S4.2", "range": "I–S", "words": [{"w": "Improve", "s": "im-PROOV", "m": "Make better"}, {"w": "Inform", "s": "in-FAWM", "m": "Tell or update someone"}, {"w": "Include", "s": "in-KLOOD", "m": "Add something as part of a group"}, {"w": "Measure", "s": "MEZH-uh", "m": "Find size, progress, or amount"}, {"w": "Monitor", "s": "MON-i-tuh", "m": "Watch progress or quality"}, {"w": "Motivate", "s": "MOH-tuh-vayt", "m": "Inspire effort"}, {"w": "Outline", "s": "OWT-lyn", "m": "Give main points"}, {"w": "Oversee", "s": "OH-vuh-SEE", "m": "Watch and manage work carefully"}, {"w": "Plan", "s": "PLAN", "m": "Decide steps ahead"}, {"w": "Prioritise", "s": "pry-ORR-i-tyz", "m": "Put tasks in order of importance"}, {"w": "Proceed", "s": "pruh-SEED", "m": "Continue or go ahead"}, {"w": "Provide", "s": "pruh-VYD", "m": "Give what is needed"}, {"w": "Receive", "s": "ri-SEEV", "m": "Get information or work"}, {"w": "Recommend", "s": "REK-uh-MEND", "m": "Suggest or advise"}, {"w": "Reflect", "s": "ri-FLEKT", "m": "Think carefully or review"}, {"w": "Refine", "s": "ri-FYN", "m": "Improve something by making small changes"}, {"w": "Reply to", "s": "ri-PLY too", "m": "Answer a message or request"}, {"w": "Report", "s": "ri-PAWT", "m": "Give a summary or update"}, {"w": "Revise", "s": "ri-VYZ", "m": "Change or improve based on feedback"}, {"w": "Set up", "s": "SET UP", "m": "Arrange or prepare something"}]}, {"id": "s4_3", "label": "S4.3", "range": "S–Z", "words": [{"w": "Send in", "s": "SEND IN", "m": "Submit work for checking"}, {"w": "Specify", "s": "SPES-uh-fy", "m": "State something clearly and exactly"}, {"w": "Summarise", "s": "SUM-uh-ryz", "m": "State main points briefly"}, {"w": "Support", "s": "suh-PAWT", "m": "Help or assist"}, {"w": "Track", "s": "TRAK", "m": "Follow progress or movement"}, {"w": "Verify", "s": "VERR-uh-fy", "m": "Check something is true or correct"}, {"w": "Warn", "s": "WAWN", "m": "Tell about possible problems"}, {"w": "Work on", "s": "WURK ON", "m": "Spend time developing something"}, {"w": "Write up", "s": "RYT UP", "m": "Create a final version or report"}, {"w": "Zoom in / out", "s": "ZOOM IN / OWT", "m": "Enlarge or reduce display view"}]}]}]</script>
+
+<script>
+(function(){
+  "use strict";
+
+  var DATA = JSON.parse(document.getElementById("vocabData").textContent);
+  var AUDIO_FILES = {
+    s1_1: "/Workplace-Vocabulary-Toolkit/audio%3As1_1.mp3.mp3",
+    s1_2: "/Workplace-Vocabulary-Toolkit/audio%3As1_2.mp3.mp3",
+    s1_3: "/Workplace-Vocabulary-Toolkit/audio%3As1_3.mp3.mp3",
+    s2_1: "/Workplace-Vocabulary-Toolkit/audio%3As2_1.mp3.mp3",
+    s2_2: "/Workplace-Vocabulary-Toolkit/audio%3As2_2.mp3.mp3",
+    s2_3: "/Workplace-Vocabulary-Toolkit/audio%3As2_3.mp3.mp3",
+    s3_1: "/Workplace-Vocabulary-Toolkit/audio%3As3_1.mp3.mp3",
+    s3_2: "/Workplace-Vocabulary-Toolkit/audio%3As3_2.mp3.mp3",
+    s3_3: "/Workplace-Vocabulary-Toolkit/audio%3As3_3.mp3.mp3",
+    s4_1: "/Workplace-Vocabulary-Toolkit/audio%3As4_1.mp3.mp3",
+    s4_2: "/Workplace-Vocabulary-Toolkit/audio%3As4_2.mp3.mp3",
+    s4_3: "/Workplace-Vocabulary-Toolkit/audio%3As4_3.mp3.mp3"
+  };
+  var SAVED_KEY = "fluentry_vocab_saved_v1";
+  var currentSection = DATA[0].id;
+  var currentView = "learn";
+
+  function loadSaved(){
+    try{
+      var raw = window.localStorage.getItem(SAVED_KEY);
+      if(!raw){ return {}; }
+      return JSON.parse(raw);
+    }catch(e){
+      return {};
+    }
+  }
+  function saveSaved(obj){
+    try{
+      window.localStorage.setItem(SAVED_KEY, JSON.stringify(obj));
+    }catch(e){}
+  }
+  var savedWords = loadSaved();
+
+  function keyFor(sectionId, word){
+    return sectionId + "::" + word;
+  }
+
+  function buildTabs(){
+    var nav = document.getElementById("tabsNav");
+    for(var i=0;i<DATA.length;i++){
+      var sec = DATA[i];
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = sec.num;
+      btn.setAttribute("data-sec", sec.id);
+      if(sec.id === currentSection){ btn.className = "active"; }
+      btn.addEventListener("click", (function(id){
+        return function(){
+          currentSection = id;
+          currentView = "learn";
+          renderAll();
+        };
+      })(sec.id));
+      nav.appendChild(btn);
+    }
+  }
+
+  function buildBottomNav(){
+    var buttons = document.querySelectorAll("nav.bottombar button");
+    for(var i=0;i<buttons.length;i++){
+      buttons[i].addEventListener("click", (function(btn){
+        return function(){
+          currentView = btn.getAttribute("data-view");
+          renderAll();
+        };
+      })(buttons[i]));
+    }
+  }
+
+  function updateActiveStates(){
+    var tabButtons = document.querySelectorAll("nav.tabs button");
+    for(var i=0;i<tabButtons.length;i++){
+      var isTabActive = tabButtons[i].getAttribute("data-sec") === currentSection;
+      tabButtons[i].className = isTabActive ? "active" : "";
+    }
+    var navButtons = document.querySelectorAll("nav.bottombar button");
+    for(var j=0;j<navButtons.length;j++){
+      var isNavActive = navButtons[j].getAttribute("data-view") === currentView;
+      navButtons[j].className = isNavActive ? "active" : "";
+    }
+    var tabsNav = document.getElementById("tabsNav");
+    tabsNav.style.display = (currentView === "learn") ? "flex" : "none";
+  }
+
+  function findSection(id){
+    for(var i=0;i<DATA.length;i++){
+      if(DATA[i].id === id){ return DATA[i]; }
+    }
+    return DATA[0];
+  }
+
+  function makeWordRow(sectionId, item){
+    var li = document.createElement("li");
+    li.className = "word-row";
+
+    var head = document.createElement("div");
+    head.className = "word-head";
+
+    var wtext = document.createElement("div");
+    wtext.className = "wtext";
+    var wEl = document.createElement("div");
+    wEl.className = "w";
+    wEl.textContent = item.w;
+    var soundsEl = document.createElement("div");
+    soundsEl.className = "sounds";
+    soundsEl.textContent = item.s;
+    wtext.appendChild(wEl);
+    wtext.appendChild(soundsEl);
+
+    var star = document.createElement("button");
+    star.type = "button";
+    star.className = "star";
+    var k = keyFor(sectionId, item.w);
+    var isSaved = !!savedWords[k];
+    star.textContent = isSaved ? "\u2605" : "\u2606";
+    if(isSaved){ star.className = "star saved"; }
+    star.addEventListener("click", function(ev){
+      ev.stopPropagation();
+      if(savedWords[k]){
+        delete savedWords[k];
+      } else {
+        savedWords[k] = { w: item.w, s: item.s, m: item.m, sec: sectionId };
+      }
+      saveSaved(savedWords);
+      var nowSaved = !!savedWords[k];
+      star.textContent = nowSaved ? "\u2605" : "\u2606";
+      star.className = nowSaved ? "star saved" : "star";
+    });
+
+    head.appendChild(wtext);
+    head.appendChild(star);
+
+    var meaning = document.createElement("div");
+    meaning.className = "word-meaning";
+    meaning.textContent = item.m;
+
+    head.addEventListener("click", function(){
+      li.className = (li.className.indexOf("open") === -1) ? "word-row open" : "word-row";
+    });
+
+    li.appendChild(head);
+    li.appendChild(meaning);
+    return li;
+  }
+
+  function renderLearn(container){
+    var sec = findSection(currentSection);
+
+    var totalWords = 0;
+    for(var t=0;t<sec.subs.length;t++){ totalWords += sec.subs[t].words.length; }
+
+    var titleRow = document.createElement("div");
+    titleRow.className = "section-title-row";
+    var h2 = document.createElement("h2");
+    h2.textContent = sec.num + " \u00b7 " + sec.title;
+    var count = document.createElement("div");
+    count.className = "word-count";
+    count.textContent = totalWords + " words";
+    titleRow.appendChild(h2);
+    titleRow.appendChild(count);
+    container.appendChild(titleRow);
+
+    var searchWrap = document.createElement("div");
+    searchWrap.className = "search-wrap";
+    var searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.placeholder = "Search this section\u2026";
+    searchWrap.appendChild(searchInput);
+    container.appendChild(searchWrap);
+
+    var subBlocks = [];
+
+    for(var i=0;i<sec.subs.length;i++){
+      var sub = sec.subs[i];
+
+      var subWrap = document.createElement("div");
+      subWrap.className = "sub-block";
+
+      var subHeading = document.createElement("div");
+      subHeading.className = "sub-heading";
+      subHeading.textContent = sub.label + "  \u00b7  " + sub.range;
+      subWrap.appendChild(subHeading);
+
+      var audioCard = document.createElement("div");
+      audioCard.className = "audio-card";
+      var label = document.createElement("div");
+      label.className = "label";
+      label.textContent = sub.label + " Audio \u2014 British Pronunciation";
+      audioCard.appendChild(label);
+
+      var audioSrc = AUDIO_FILES[sub.id];
+      var hasAudio = !!audioSrc;
+      if(hasAudio){
+        var audioEl = document.createElement("audio");
+        audioEl.setAttribute("controls", "controls");
+        audioEl.setAttribute("preload", "none");
+        audioEl.setAttribute("src", audioSrc);
+        audioCard.appendChild(audioEl);
+      }
+      var note = document.createElement("div");
+      note.className = "note";
+      note.textContent = hasAudio
+        ? "Listen to all " + sub.label + " words read aloud."
+        : "Audio for " + sub.label + " will appear here once added.";
+      audioCard.appendChild(note);
+      subWrap.appendChild(audioCard);
+
+      var list = document.createElement("ul");
+      list.className = "word-list";
+      subWrap.appendChild(list);
+
+      container.appendChild(subWrap);
+      subBlocks.push({ sub: sub, list: list, wrap: subWrap });
+    }
+
+    function renderFiltered(filterText){
+      var ft = (filterText || "").toLowerCase();
+      var anyShown = false;
+      for(var b=0;b<subBlocks.length;b++){
+        var block = subBlocks[b];
+        block.list.textContent = "";
+        var shownInBlock = 0;
+        for(var w=0;w<block.sub.words.length;w++){
+          var item = block.sub.words[w];
+          if(ft && item.w.toLowerCase().indexOf(ft) === -1 && item.m.toLowerCase().indexOf(ft) === -1){
+            continue;
+          }
+          block.list.appendChild(makeWordRow(block.sub.id, item));
+          shownInBlock++;
+        }
+        block.wrap.style.display = (ft && shownInBlock === 0) ? "none" : "";
+        if(shownInBlock > 0){ anyShown = true; }
+      }
+      if(ft && !anyShown){
+        var empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = "No matches. Try another word.";
+        container.appendChild(empty);
+      }
+    }
+    renderFiltered("");
+
+    searchInput.addEventListener("input", function(){
+      renderFiltered(searchInput.value);
+    });
+  }
+
+  function renderSaved(container){
+    var titleRow = document.createElement("div");
+    titleRow.className = "section-title-row";
+    var h2 = document.createElement("h2");
+    h2.textContent = "Saved Words";
+    titleRow.appendChild(h2);
+    container.appendChild(titleRow);
+
+    var keys = Object.keys(savedWords);
+    var list = document.createElement("ul");
+    list.className = "word-list";
+
+    if(keys.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "Tap the star next to any word to save it here.";
+      container.appendChild(empty);
+      return;
+    }
+
+    for(var i=0;i<keys.length;i++){
+      var entry = savedWords[keys[i]];
+      list.appendChild(makeWordRow(entry.sec, { w: entry.w, s: entry.s, m: entry.m }));
+    }
+    container.appendChild(list);
+  }
+
+  function renderPractice(container){
+    var titleRow = document.createElement("div");
+    titleRow.className = "section-title-row";
+    var h2 = document.createElement("h2");
+    h2.textContent = "Phrase Practice";
+    titleRow.appendChild(h2);
+    container.appendChild(titleRow);
+
+    var quote = document.createElement("div");
+    quote.className = "quote-card";
+    quote.textContent = "\u201cLittle progress every day becomes a fluency you once dreamed of.\u201d";
+    container.appendChild(quote);
+
+    var examples = [
+      [["You can ", "access", " the files online any time you need them."], ["He\u2019ll ", "assign", " each person a specific task for the project."]],
+      [["I\u2019ll ", "present", " the final result in tomorrow\u2019s meeting."], ["The team needs to ", "respond", " quickly to customer enquiries."]],
+      [["The manager will ", "allocate", " more time for training next month."], ["We need to ", "collaborate", " closely to finish the project on time."]],
+      [["I\u2019d like to ", "chat", " later about improving our workflow."], ["You can ", "request", " additional support if it becomes too complex."]]
+    ];
+
+    for(var i=0;i<examples.length;i++){
+      var card = document.createElement("div");
+      card.className = "practice-card";
+      for(var j=0;j<examples[i].length;j++){
+        var parts = examples[i][j];
+        var p = document.createElement("p");
+        p.appendChild(document.createTextNode("\u201c" + parts[0]));
+        var b = document.createElement("b");
+        b.textContent = parts[1];
+        p.appendChild(b);
+        p.appendChild(document.createTextNode(parts[2] + "\u201d"));
+        card.appendChild(p);
+      }
+      container.appendChild(card);
+    }
+  }
+
+  function renderAll(){
+    updateActiveStates();
+    var main = document.getElementById("mainArea");
+    main.textContent = "";
+    if(currentView === "learn"){
+      renderLearn(main);
+    } else if(currentView === "saved"){
+      renderSaved(main);
+    } else if(currentView === "practice"){
+      renderPractice(main);
+    }
+  }
+
+  buildTabs();
+  buildBottomNav();
+  renderAll();
+
+})();
+</script>
+</body>
+</html>
